@@ -1,0 +1,134 @@
+@import 'tailwindcss';
+
+/* ============================================================
+   FocusFlow design tokens
+   Palette: study-lamp-at-night — deep indigo-black base,
+   warm amber glow as the single accent, cool violet as
+   the quiet secondary used only in data visualization.
+   ============================================================ */
+@theme {
+  --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --color-base: #0b0b12;
+  --color-base-raised: #121220;
+  --color-base-elevated: #191929;
+  --color-border: #26263a;
+  --color-border-soft: #1c1c2c;
+
+  --color-text-primary: #edecf4;
+  --color-text-secondary: #a9a8bd;
+  --color-text-muted: #6f6e85;
+
+  /* Changed from Amber to Premium Blue */
+  --color-amber: #4F8CFF;
+  --color-amber-soft: #7EB2FF;
+  --color-amber-dim: #2D63D9;
+
+  --color-violet: #7c83fd;
+  --color-violet-soft: #a5aafe;
+
+  --color-success: #5fd9a4;
+  --color-danger: #e9707a;
+
+  /* Blue Glow */
+  --shadow-glow-amber: 0 0 60px -12px rgba(79, 140, 255, 0.35);
+
+  --shadow-card: 0 1px 0 0 rgba(255, 255, 255, 0.03) inset,
+                 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    color-scheme: dark;
+  }
+  body {
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, #1a1730 0%, #0b0b12 55%) fixed;
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  ::selection {
+    background: rgba(242, 169, 78, 0.3);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* custom scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 8px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--color-amber-dim);
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.035);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .text-gradient-amber {
+    background: linear-gradient(135deg, var(--color-amber-soft), var(--color-amber));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes float-particle {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateY(-24px) translateX(8px);
+    opacity: 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
