@@ -49,14 +49,41 @@ export function StatisticsPage() {
       return buckets;
     }
     if (period === 'weekly') return weeklySeriesLast(sessions, 7);
-    if (period === 'monthly') return weeklySeriesLast(sessions, 30).reduce<{ label: string; seconds: number }[]>(
-      (acc, d, i) => {
-        if (i % 3 === 0) acc.push({ label: d.label, seconds: 0 });
-        acc[acc.length - 1].seconds += d.seconds;
-        return acc;
-      },
-      []
-    );
+   if (period === 'monthly') {
+  const now = new Date();
+
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  // Number of days in this month
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  // Number of week buckets (4 or 5)
+  const weekCount = Math.ceil(daysInMonth / 7);
+
+  const weeks = Array.from({ length: weekCount }, (_, i) => ({
+    label: `W${i + 1}`,
+    seconds: 0,
+  }));
+
+  sessions.forEach((session) => {
+    const date = new Date(session.startTime);
+
+    // Ignore sessions from other months
+    if (
+      date.getMonth() !== month ||
+      date.getFullYear() !== year
+    ) {
+      return;
+    }
+
+    const weekIndex = Math.floor((date.getDate() - 1) / 7);
+
+    weeks[weekIndex].seconds += totalSeconds([session]);
+  });
+
+  return weeks;
+}
     return monthlySeriesLast(sessions, 12);
   }, [sessions, period]);
 
