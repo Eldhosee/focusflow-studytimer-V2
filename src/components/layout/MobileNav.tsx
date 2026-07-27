@@ -13,7 +13,19 @@ const ITEMS = [
 
 export function MobileNav() {
   return (
-    <nav className="glass fixed inset-x-0 bottom-0 z-40 flex items-center justify-around px-1 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] lg:hidden">
+  <nav
+  className="
+    fixed inset-x-0 bottom-0 z-40
+    flex items-center justify-around
+    px-1 py-2
+    pb-[calc(0.5rem+env(safe-area-inset-bottom))]
+    lg:hidden
+    border-t border-white/10
+    bg-[rgba(18,18,32,0.92)]
+    backdrop-blur-2xl
+    shadow-[0_-10px_30px_rgba(0,0,0,0.45)]
+  "
+> 
       {ITEMS.map(({ to, label, icon: Icon, end }) => (
         <NavLink
           key={to}
