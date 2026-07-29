@@ -37,7 +37,7 @@ export function SettingsPage() {
   const { profile, settings, refreshProfile, refreshSettings } = useAppData();
   const { show } = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
-  const [dailyGoal, setDailyGoal] = useState(profile?.dailyGoalMinutes ?? 60);
+ 
   const [displayName, setDisplayName] = useState(profile?.displayName ?? '');
 
   const saveProfile = async () => {
