@@ -42,7 +42,7 @@ export function SettingsPage() {
 
   const saveProfile = async () => {
     if (!profile) return;
-    await profileRepository.save({ ...profile, displayName, dailyGoalMinutes: dailyGoal });
+    await profileRepository.save({ ...profile, displayName });
     await refreshProfile();
     show('Profile updated.', 'success');
   };
