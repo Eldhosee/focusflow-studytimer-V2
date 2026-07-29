@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect,useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, Target, Trash2 } from 'lucide-react';
+import { Plus, Target, Trash2,Pencil  } from 'lucide-react';
 import { useAppData } from '../../contexts/AppDataContext';
 import { useLiveSessions } from '../../hooks/useLiveSessions';
 import { goalRepository } from '../../database/repositories';
@@ -33,7 +33,8 @@ export function GoalsPage() {
   const { sessions } = useLiveSessions();
   const { show } = useToast();
   const [modalOpen, setModalOpen] = useState(false);
-  const [confettiTrigger, setConfettiTrigger] = useState(0);
+const [editingGoal, setEditingGoal] = useState<(typeof goals)[number] | null>(null);
+const [confettiTrigger, setConfettiTrigger] = useState(0);
 
   const {
     register,
@@ -44,7 +45,21 @@ export function GoalsPage() {
     resolver: zodResolver(goalFormSchema),
     defaultValues: { period: 'daily', targetMinutes: 60, label: '' },
   });
-
+useEffect(() => {
+  if (editingGoal) {
+    reset({
+      period: editingGoal.period,
+      targetMinutes: editingGoal.targetMinutes,
+      label: editingGoal.label ?? '',
+    });
+  } else {
+    reset({
+      period: 'daily',
+      targetMinutes: 60,
+      label: '',
+    });
+  }
+}, [editingGoal, reset]);
   const goalsWithProgress = useMemo(
     () =>
       goals
@@ -57,19 +72,32 @@ export function GoalsPage() {
     [goals, sessions]
   );
 
-  const onSubmit = async (data: GoalForm) => {
+ const onSubmit = async (data: GoalForm) => {
+  if (editingGoal) {
+    await goalRepository.update(editingGoal.id, {
+      period: data.period,
+      targetMinutes: data.targetMinutes,
+      label: data.label || undefined,
+    });
+
+    show('Goal updated.', 'success');
+  } else {
     await goalRepository.create({
       period: data.period,
       targetMinutes: data.targetMinutes,
       label: data.label || undefined,
       active: true,
     });
-    await refreshGoals();
-    show('Goal created.', 'success');
-    setModalOpen(false);
-    reset();
-  };
 
+    show('Goal created.', 'success');
+  }
+
+  await refreshGoals();
+
+  setEditingGoal(null);
+  setModalOpen(false);
+  reset();
+};
   const handleDelete = async (id: string) => {
     await goalRepository.remove(id);
     await refreshGoals();
@@ -109,6 +137,17 @@ export function GoalsPage() {
                 <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-[color:var(--color-text-muted)]">
                   {goal.period}
                 </span>
+                <div className="flex items-center gap-2">
+    <button
+  onClick={() => {
+    setEditingGoal(goal);
+    setModalOpen(true);
+  }}
+  className="text-[color:var(--color-text-muted)] hover:text-[color:var(--color-amber)]"
+  aria-label="Edit goal"
+>
+      <Pencil size={14} />
+    </button>
                 <button
                   onClick={() => handleDelete(goal.id)}
                   className="text-[color:var(--color-text-muted)] hover:text-[color:var(--color-danger)]"
@@ -117,6 +156,7 @@ export function GoalsPage() {
                   <Trash2 size={14} />
                 </button>
               </div>
+               </div>
 
               <ProgressRing
                 progress={progress}
@@ -153,7 +193,10 @@ export function GoalsPage() {
         </div>
       )}
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="New goal">
+      <Modal open={modalOpen}   title={editingGoal ? 'Edit goal' : 'New goal'} onClose={() => {
+    setModalOpen(false);
+    setEditingGoal(null);
+  }}>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div>
             <label className="mb-1.5 block text-xs font-medium text-[color:var(--color-text-secondary)]">Period</label>
@@ -191,12 +234,19 @@ export function GoalsPage() {
             />
           </div>
           <div className="mt-2 flex justify-end gap-3">
-            <Button type="button" variant="ghost" onClick={() => setModalOpen(false)}>
-              Cancel
-            </Button>
+            <Button
+  type="button"
+  variant="ghost"
+  onClick={() => {
+    setModalOpen(false);
+    setEditingGoal(null);
+  }}
+>
+  Cancel
+</Button>
             <Button type="submit" variant="primary">
-              Create goal
-            </Button>
+  {editingGoal ? 'Save changes' : 'Create goal'}
+</Button>
           </div>
         </form>
       </Modal>

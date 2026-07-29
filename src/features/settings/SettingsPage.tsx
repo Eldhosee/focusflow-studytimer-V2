@@ -86,23 +86,7 @@ export function SettingsPage() {
               className="w-full rounded-xl border border-[color:var(--color-border)] bg-white/[0.03] px-4 py-2.5 text-sm text-[color:var(--color-text-primary)] outline-none focus:border-[color:var(--color-amber-dim)]"
             />
           </div>
-          <div>
-            <div className="mb-1.5 flex items-center justify-between">
-              <label className="text-xs font-medium text-[color:var(--color-text-secondary)]">Daily goal</label>
-              <span className="font-[family-name:var(--font-mono)] text-sm text-[color:var(--color-amber-soft)]">
-                {Math.floor(dailyGoal / 60)}h {dailyGoal % 60}m
-              </span>
-            </div>
-            <input
-              type="range"
-              min={15}
-              max={480}
-              step={15}
-              value={dailyGoal}
-              onChange={(e) => setDailyGoal(Number(e.target.value))}
-              className="w-full accent-[color:var(--color-amber)]"
-            />
-          </div>
+          
           <Button variant="primary" onClick={saveProfile} className="self-start">
             Save changes
           </Button>
