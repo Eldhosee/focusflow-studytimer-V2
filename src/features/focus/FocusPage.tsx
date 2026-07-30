@@ -100,6 +100,16 @@ function PreSessionScreen({ onStart }: { onStart: (subject: string) => void }) {
       >
         <Play size={28} fill="currentColor" className="ml-1" />
       </button>
+
+      <button
+  type="button"
+  className="text-sm font-medium text-[color:var(--color-amber)] transition hover:underline"
+  onClick={() => {
+    // We'll implement this later
+  }}
+>
+  + Manage Subjects
+</button>
       <p className="text-xs text-[color:var(--color-text-muted)]">
         Press <kbd className="rounded bg-white/10 px-1.5 py-0.5">F</kbd> to go fullscreen once started
       </p>
