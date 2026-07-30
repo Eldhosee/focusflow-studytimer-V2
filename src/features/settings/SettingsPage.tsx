@@ -39,7 +39,7 @@ export function SettingsPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [subjectsModalOpen, setSubjectsModalOpen] = useState(false);
   const [displayName, setDisplayName] = useState(profile?.displayName ?? '');
-  const { subjects } = useAppData();
+  // const { subjects } = useAppData();
   const saveProfile = async () => {
     if (!profile) return;
     await profileRepository.save({ ...profile, displayName });
